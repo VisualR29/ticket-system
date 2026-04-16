@@ -44,6 +44,31 @@
                         <p class="text-gray-800 whitespace-pre-wrap">{{ $ticket->descripcion_detallada }}</p>
                     </div>
                 @endif
+                <div class="pt-4 border-t border-gray-100">
+    <h5 class="text-gray-900 font-semibold mb-3">Adjuntos del ticket</h5>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        @foreach($ticket->attachments as $attachment)
+            <div class="group relative bg-gray-50 p-2 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                @if(str_starts_with($attachment->mime_type, 'image/'))
+                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="block">
+                        <img src="{{ Storage::url($attachment->file_path) }}"
+                            class="w-full h-32 object-cover rounded-md shadow-sm mb-2" 
+                            alt="{{ $attachment->original_name }}">
+                    </a>
+                @else
+                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
+                        class="flex items-center justify-center h-32 bg-white rounded-md border border-dashed border-gray-300 mb-2 group-hover:border-indigo-400 transition-colors">
+                        <span class="text-indigo-600 text-xs font-bold uppercase">{{ $attachment->type }}</span>
+                    </a>
+                @endif
+                <p class="text-gray-600 text-xs truncate font-medium" title="{{ $attachment->original_name }}">
+                    {{ $attachment->original_name }}
+                </p>
+                <p class="text-[10px] text-gray-400 uppercase">{{ $attachment->mime_type }}</p>
+            </div>
+        @endforeach
+    </div>
+</div>
                 @if ($ticket->comentarios_tecnico)
                     <div>
                         <p class="text-gray-500 text-xs uppercase tracking-wide">Comentarios del técnico</p>

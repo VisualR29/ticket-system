@@ -5,7 +5,7 @@
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Nuevo ticket de soporte</h1>
         <p class="text-sm text-gray-600 mb-6">Describe tu problema. Lo atenderemos según la urgencia indicada.</p>
 
-        <form action="{{ route('usuario.tickets.store') }}" method="POST" class="space-y-5 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+        <form action="{{ route('usuario.tickets.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             @csrf
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Departamento *</label>
@@ -55,6 +55,11 @@
                 <textarea name="descripcion_detallada" rows="4"
                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
                     placeholder="Pasos para reproducir, mensajes de error, etc.">{{ old('descripcion_detallada') }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Adjuntar imágenes y documentos</label>
+                <input type="file" name="attachments[]" multiple class="form-control" accept="image/*,.pdf,.doc,.docx,.txt,.xls,.xlsx">
+                <small class="text-muted">Máximo 10 MB por archivo. Puedes seleccionar varios.</small>
             </div>
             <div class="flex gap-3 pt-2">
                 <button type="submit"

@@ -33,4 +33,9 @@ class Ticket extends Model
         'fecha_promesa' => 'datetime',
         'fecha_resolucion' => 'datetime',
     ];
+
+    public function attachments()
+    {
+    return $this->hasMany(TicketAttachment::class);
+    }
 }
