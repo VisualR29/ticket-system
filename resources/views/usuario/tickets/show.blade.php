@@ -39,6 +39,7 @@
                         <p class="text-gray-800 whitespace-pre-wrap">{{ $ticket->descripcion_detallada }}</p>
                     </div>
                 @endif
+                @include('tickets.partials.attachments-section', ['ticket' => $ticket])
                 @if ($ticket->comentarios_tecnico)
                     <div class="rounded-md bg-amber-50 border border-amber-100 p-4">
                         <p class="text-amber-900 text-xs font-semibold uppercase tracking-wide mb-1">Respuesta del equipo</p>

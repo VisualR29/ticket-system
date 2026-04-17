@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class TicketAttachment extends Model
 {
     use HasFactory;
 
-    // Esto es vital para que puedas guardar los datos masivamente
     protected $fillable = [
         'ticket_id',
         'original_name',
@@ -19,8 +20,14 @@ class TicketAttachment extends Model
         'type',
     ];
 
-    // La relación va AQUÍ ADENTRO
-    public function ticket()
+    protected static function booted(): void
+    {
+        static::deleting(function (TicketAttachment $attachment): void {
+            Storage::disk('public')->delete($attachment->file_path);
+        });
+    }
+
+    public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
     }

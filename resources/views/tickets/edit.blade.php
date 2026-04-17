@@ -3,7 +3,7 @@
 @section('content')
     <div class="max-w-3xl mx-auto">
         <h1 class="text-2xl font-bold text-gray-900 mb-6">Editar {{ $ticket->numero_reporte }}</h1>
-        <form action="{{ route('admin.tickets.update', $ticket) }}" method="POST"
+        <form action="{{ route('admin.tickets.update', $ticket) }}" method="POST" enctype="multipart/form-data"
             class="space-y-6 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             @csrf
             @method('PUT')
@@ -89,6 +89,14 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Comentarios del técnico</label>
                     <textarea name="comentarios_tecnico" rows="3"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">{{ old('comentarios_tecnico', $ticket->comentarios_tecnico) }}</textarea>
+                </div>
+                <div class="sm:col-span-2 mb-3">
+                    <label class="form-label">Adjuntar imágenes y documentos</label>
+                    <input type="file" name="attachments[]" multiple class="form-control" accept="image/*,.pdf,.doc,.docx,.txt,.xls,.xlsx">
+                    <small class="text-muted">Máximo 10 MB por archivo. Puedes seleccionar varios.</small>
+                    @error('attachments.*')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
             <div class="flex gap-3 pt-2">

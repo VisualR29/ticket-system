@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesTicketAttachments;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
 class TicketWebController extends Controller
 {
+    use HandlesTicketAttachments;
+
     public function index()
     {
         $tickets = Ticket::orderBy('fecha_reporte', 'desc')->get();
@@ -21,7 +24,7 @@ class TicketWebController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validated = $request->validate(array_merge([
             'numero_reporte' => 'required|string|max:20|unique:tickets,numero_reporte',
             'cliente_nombre' => 'required|string|max:100',
             'cliente_email' => 'nullable|email|max:150',
@@ -35,18 +38,22 @@ class TicketWebController extends Controller
             'fecha_promesa' => 'nullable|date|after_or_equal:fecha_reporte',
             'comentarios_tecnico' => 'nullable|string',
             'status' => 'in:pendiente,en_curso,en_espera,cancelada,finalizada',
-        ]);
+        ], $this->attachmentValidationRules()));
 
         $validated['status'] = $validated['status'] ?? 'pendiente';
 
-        Ticket::create($validated);
+        $ticket = Ticket::create(collect($validated)->except(['attachments'])->all());
 
-        return redirect()->route('admin.tickets.index')
-            ->with('success', 'Ticket creado exitosamente.');
+        $this->processUploadedAttachments($request, $ticket);
+
+        return redirect()->route('admin.tickets.show', $ticket)
+            ->with('success', 'Ticket creado con adjuntos');
     }
 
     public function show(Ticket $ticket)
     {
+        $ticket->load('attachments');
+
         return view('tickets.show', compact('ticket'));
     }
 
@@ -57,7 +64,7 @@ class TicketWebController extends Controller
 
     public function update(Request $request, Ticket $ticket)
     {
-        $validated = $request->validate([
+        $validated = $request->validate(array_merge([
             'cliente_nombre' => 'required|string|max:100',
             'cliente_email' => 'nullable|email|max:150',
             'departamento' => 'required|string|max:100',
@@ -70,11 +77,13 @@ class TicketWebController extends Controller
             'fecha_resolucion' => 'nullable|date',
             'comentarios_tecnico' => 'nullable|string',
             'status' => 'required|in:pendiente,en_curso,en_espera,cancelada,finalizada',
-        ]);
+        ], $this->attachmentValidationRules()));
 
-        $ticket->update($validated);
+        $ticket->update(collect($validated)->except(['attachments'])->all());
 
-        return redirect()->route('admin.tickets.index')
+        $this->processUploadedAttachments($request, $ticket);
+
+        return redirect()->route('admin.tickets.show', $ticket)
             ->with('success', 'Ticket actualizado correctamente.');
     }
 

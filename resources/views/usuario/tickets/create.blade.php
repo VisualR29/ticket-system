@@ -60,6 +60,9 @@
                 <label class="form-label">Adjuntar imágenes y documentos</label>
                 <input type="file" name="attachments[]" multiple class="form-control" accept="image/*,.pdf,.doc,.docx,.txt,.xls,.xlsx">
                 <small class="text-muted">Máximo 10 MB por archivo. Puedes seleccionar varios.</small>
+                @error('attachments.*')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
             <div class="flex gap-3 pt-2">
                 <button type="submit"

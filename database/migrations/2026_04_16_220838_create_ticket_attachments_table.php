@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('size')->nullable();
             $table->enum('type', ['image', 'document'])->default('document');
             $table->timestamps();
-            });
+        });
     }
 
     /**
