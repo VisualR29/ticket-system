@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Concerns;
 
+use App\Jobs\AnalyzeTicketAttachmentJob;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
@@ -32,13 +33,15 @@ trait HandlesTicketAttachments
             $path = $file->store('ticket-attachments', 'public');
             $mimeType = $file->getMimeType() ?: 'application/octet-stream';
 
-            $ticket->attachments()->create([
+            $attachment = $ticket->attachments()->create([
                 'original_name' => $file->getClientOriginalName(),
                 'file_path' => $path,
                 'mime_type' => $mimeType,
                 'size' => (string) $file->getSize(),
                 'type' => str_starts_with($mimeType, 'image/') ? 'image' : 'document',
             ]);
+
+            AnalyzeTicketAttachmentJob::dispatch($attachment->id);
         }
     }
 }

@@ -49,4 +49,9 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketAttachment::class);
     }
+
+    public function aiAnalysis()
+    {
+        return $this->hasOne(TicketAiAnalysis::class);
+    }
 }

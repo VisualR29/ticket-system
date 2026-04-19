@@ -52,7 +52,7 @@ class TicketWebController extends Controller
 
     public function show(Ticket $ticket)
     {
-        $ticket->load('attachments');
+        $ticket->load(['attachments', 'aiAnalysis']);
 
         return view('tickets.show', compact('ticket'));
     }

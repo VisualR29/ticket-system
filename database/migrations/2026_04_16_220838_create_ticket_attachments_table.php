@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
             $table->string('original_name');
-            $table->string('file_path'); // ruta relativa en storage
+            $table->string('file_path');
             $table->string('mime_type');
             $table->string('size')->nullable();
             $table->enum('type', ['image', 'document'])->default('document');

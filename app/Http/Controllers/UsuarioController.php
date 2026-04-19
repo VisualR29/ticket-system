@@ -83,7 +83,7 @@ class UsuarioController extends Controller
             abort(403, 'No tienes acceso a este ticket.');
         }
 
-        $ticket->load('attachments');
+        $ticket->load(['attachments', 'aiAnalysis']);
 
         return view('usuario.tickets.show', compact('ticket'));
     }

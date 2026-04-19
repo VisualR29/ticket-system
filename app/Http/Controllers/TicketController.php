@@ -13,7 +13,9 @@ class TicketController extends Controller
 
     public function index(): JsonResponse
     {
-        $tickets = Ticket::with('attachments')->orderBy('fecha_reporte', 'desc')->get();
+        $tickets = Ticket::with(['attachments', 'aiAnalysis'])
+            ->orderBy('fecha_reporte', 'desc')
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -49,7 +51,7 @@ class TicketController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Ticket creado exitosamente.',
-            'data' => $ticket->load('attachments'),
+            'data' => $ticket->load(['attachments', 'aiAnalysis']),
         ], 201);
     }
 
@@ -57,7 +59,7 @@ class TicketController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => $ticket->load('attachments'),
+            'data' => $ticket->load(['attachments', 'aiAnalysis']),
         ], 200);
     }
 
@@ -85,7 +87,7 @@ class TicketController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Ticket actualizado correctamente.',
-            'data' => $ticket->fresh()->load('attachments'),
+            'data' => $ticket->fresh()->load(['attachments', 'aiAnalysis']),
         ], 200);
     }
 
@@ -94,12 +96,13 @@ class TicketController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:pendiente,en_curso,en_espera,cancelada,finalizada',
         ]);
+
         $ticket->update($validated);
 
         return response()->json([
             'success' => true,
             'message' => 'Estado actualizado correctamente.',
-            'data' => $ticket->fresh()->load('attachments'),
+            'data' => $ticket->fresh()->load(['attachments', 'aiAnalysis']),
         ], 200);
     }
 

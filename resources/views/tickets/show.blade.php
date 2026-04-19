@@ -45,6 +45,7 @@
                     </div>
                 @endif
                 @include('tickets.partials.attachments-section', ['ticket' => $ticket])
+                @include('tickets.partials.ai-analysis-section', ['ticket' => $ticket])
                 @if ($ticket->comentarios_tecnico)
                     <div>
                         <p class="text-gray-500 text-xs uppercase tracking-wide">Comentarios del técnico</p>
